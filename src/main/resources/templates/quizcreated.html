@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Quiz Created</title>
+</head>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<body>
+	<script>
+	Swal.fire({
+		  position: 'top-end',
+		  icon: 'success',
+		  title: 'Congratulations! Quiz Added Successfully!',
+		  showConfirmButton: false,
+		  timer: 1500
+		}).then(function() {
+		    window.location = history.back();
+		});
+	</script>
+</body>
+</html>

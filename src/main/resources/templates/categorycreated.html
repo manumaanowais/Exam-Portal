@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Category Created</title>
+</head>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<body>
+	<script>
+	Swal.fire({
+		  position: 'top-end',
+		  icon: 'success',
+		  title: 'Congratulations! Category Added Successfully!',
+		  showConfirmButton: false,
+		  timer: 1500
+		}).then(function() {
+		    window.location = history.back();
+		});
+	</script>
+</body>
+</html>

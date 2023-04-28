@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Register Here</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<style>
+		.btn{
+			width:195px;
+			margin-left:60px;
+		}
+		.btn-secondary{
+			margin-left:7px;
+			width:120px;
+		}
+		#otpsent {
+  			position: relative;
+ 			width: 600px;
+  			height: 300px;
+  			border-style: solid;
+		}
+
+		.position-absolute {
+  			position: absolute !important;
+		}
+	</style>
+</head>
+<body style = "background : #e2e2e2;" onload="hideButtons()">
+
+	<!-- navbar -->
+
+	<nav class="navbar navbar-expand-lg bg-dark">
+		<div class="container-fluid">
+			<a class="navbar-brand text-white" href="/signin">Exam Portal</a>
+			<button class="navbar-toggler" type="button"
+				data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+				aria-controls="navbarSupportedContent" aria-expanded="false"
+				aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+					<li class="nav-item"><a class="nav-link active text-white" href="/signin" style="margin-left:1000px">Login</a></li>
+					<li class="nav-item"><a class="nav-link active text-white" href="/signup">Register</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<!-- navbar end  -->
+	<div class="container">
+		<div class="row mt-5">
+			<div class="col-md-6 offset-md-3">
+				<form th:action="@{/addUser}" method="post" class="row g-3 needs-validation bg-white p-4" novalidate="novalidate" th:object=${user} onsubmit="sendEmail(); return false;">
+					<div class="text-center">
+						<img src="https://static9.depositphotos.com/1431107/1220/v/450/depositphotos_12204933-stock-illustration-register-vector-icon.jpg" width="150px" height="150px" class="rounded">
+					</div>
+					<div class="mb-3">
+						<label class="form-label"><b>Username</b></label>
+						<input type="text" class="form-control" name="username" th:classappend="${#fields.hasErrors('username')?'is-invalid':''}" th:value="${user.username}" >
+						<div th:each="e : ${#fields.errors('username')}" th:text="${e}" class="invalid-feedback"></div>
+					</div>
+					<div class="mb-3">
+						<label class="form-label"><b>Password</b></label>
+						<input type="password" class="form-control" name="password" th:classappend="${#fields.hasErrors('password')?'is-invalid':''}" th:value="${user.password}" id="id_password">
+						<i class="far fa-eye" id="togglePassword" style="position:relative; left: 470px; top:-30px; cursor: pointer;"></i>
+						<div th:each="e : ${#fields.errors('password')}" th:text="${e}" class="invalid-feedback"></div>
+					</div>
+					<div class="mb-3">
+						<label class="form-label"><b>First Name</b></label>
+						<input type="text" class="form-control" name="firstName" th:classappend="${#fields.hasErrors('firstName')?'is-invalid':''}" th:value="${user.firstName}" >
+						<div th:each="e : ${#fields.errors('firstName')}" th:text="${e}" class="invalid-feedback"></div>
+					</div>
+					<div class="mb-3">
+						<label class="form-label"><b>Last Name</b></label>
+						<input type="text" class="form-control" name="lastName" th:classappend="${#fields.hasErrors('lastName')?'is-invalid':''}" th:value="${user.lastName}">
+						<div th:each="e : ${#fields.errors('lastName')}" th:text="${e}" class="invalid-feedback"></div>
+					</div>
+					<div class="mb-3">
+						<label class="form-label"><b>Email Address</b></label>
+						<input onfocus="showButtons()" type="email" class="form-control" id="email" name="email" th:classappend="${#fields.hasErrors('email')?'is-invalid':''}" th:value="${user.email}">
+						<div th:each="e : ${#fields.errors('email')}" th:text="${e}" class="invalid-feedback"></div>
+					</div>
+					<div class="form-text">We'll never share your email with anyone else.</div>
+					
+					<!-- OTP Validation -->
+					<input class="btn btn-secondary" type="button" id="sendotp" onclick="sendOTP()" value="Send OTP">
+					<input class="btn btn-secondary" type="button" id="resendotp" onclick="resendOTP()" value="Resend OTP">
+					<p id="p1">Resend OTP will be available in <span id="timer" style="color : blue"></span> seconds</p>
+                	<input type="text" class="form-control" id="otp" placeholder="Enter OTP" required>
+                	<input class="btn btn-secondary" type="button" id="validateotp" onclick="validateOTP()" value="Validate OTP">
+                	
+					<div class="mb-3">
+						<label class="form-label"><b>Phone</b></label>
+						<input type="text" class="form-control" name="phone" th:classappend="${#fields.hasErrors('phone')?'is-invalid':''}" th:value="${user.phone}">
+						<div th:each="e : ${#fields.errors('phone')}" th:text="${e}" class="invalid-feedback"></div>
+					</div>
+					<div class="mb-3 form-check">
+						<input th:classappend="${#fields.hasErrors('agreed')?'is-invalid':''}" name="agreed" class="form-check-input" type="checkbox">
+      					<label class="form-check-label">Agree to the terms and conditions</label>
+      					<div th:each="e : ${#fields.errors('agreed')}" th:text="${e}" class="invalid-feedback"></div>
+					</div>
+					<input class="btn btn-primary" id = "submitbtn" type="submit" value="Submit">
+					<input class="btn btn-primary" type="reset" value="Reset">
+				</form>
+				<div id="otpsent" style="border : 0px"></div>
+			</div>
+		</div>
+	</div>
+</body>
+<script>
+	const togglePassword = document.querySelector('#togglePassword');
+	const password = document.querySelector('#id_password');
+
+	togglePassword.addEventListener('click', function (e) {
+  	// toggle the type attribute
+  	const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+  	password.setAttribute('type', type);
+  	// toggle the eye slash icon
+  	this.classList.toggle('fa-eye-slash');
+});
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<script src="https://smtpjs.com/v3/smtp.js"></script>
+<script>
+function hideButtons() {
+	  var x = document.querySelectorAll("#sendotp, #otp, #resendotp, #p1, #validateotp");
+	  for(var i = 0; i < x.length; i++) {
+	  	if (x[i].style.display === "none") {
+	    	x[i].style.display = "block";
+	  	} else {
+	    	x[i].style.display = "none";
+	  	}
+	}
+}
+
+function showButtons(){
+	var x = document.querySelectorAll("#sendotp, #otp, #validateotp");
+	  for(var i = 0; i < x.length; i++) {
+	  	if (x[i].style.display === "block") {
+	    	x[i].style.display = "none";
+	  	} else {
+	    	x[i].style.display = "block";
+	  	}
+	}
+}
+
+document.getElementById("submitbtn").disabled = true;
+document.getElementById("submitbtn").style.cursor = "not-allowed";
+document.getElementById("validateotp").disabled = true;
+document.getElementById("validateotp").style.cursor = "not-allowed";
+var randNumb = 0;
+function sendOTP()
+{
+   randNumb = Math.floor(Math.random() * (9999 - 1000 + 1) + 1000);
+   if(document.getElementById("email").value != 0 || document.getElementById("email").value != "")
+   { 
+       Email.send({
+          SecureToken : "8ee728d5-0750-4e96-9095-8fa4a4de44a5",
+          To : document.getElementById("email").value,
+          From : 'manumaanowais809@gmail.com',
+          ReplyTo : 'manumaanowais809@gmail.com',
+          Subject : "Exam Portal - OTP For Email Validation",
+          Body : "<br><b>Your One Time Password for verifying your email is : </b>"
+          + randNumb,
+        }).then(
+           message => Swal.fire({
+        	  	  text: 'OTP sent to : '+document.getElementById("email").value,
+        	  	  target: '#otpsent',
+        	  	  customClass: {
+        	  	    body: 'position-absolute'
+        	  	  },
+        	  	  toast: true,
+        	  	  position: 'top-right'
+        	  	})
+           
+        );
+      
+      document.getElementById("sendotp").disabled = true;
+      document.getElementById("validateotp").style.cursor = "pointer";
+      document.getElementById("validateotp").disabled = false;
+      
+      //30 seconds timer
+      var timeLeft = 30;
+      var elem = document.getElementById('timer');
+      
+      var timerId = setInterval(countdown, 1000);
+      
+      function countdown() {
+        if (timeLeft == -1) {
+          clearTimeout(timerId);
+          doSomething();
+        } else {
+          elem.innerHTML = timeLeft;
+          timeLeft--;
+        }
+      }
+      document.getElementById("p1").style.display = "block";
+      
+      $("#resendotp").delay(31000).fadeIn();
+      document.getElementById("resendotp").disabled = false;
+      
+   }
+   else
+   {
+	   Swal.fire({
+		   text: 'Email cannot be empty',
+		   target: '#otpsent',
+		   customClass: {
+		     body: 'position-absolute'
+		   },
+		   toast: true,
+		   position: 'top-right'
+		 })
+   }   
+}
+
+function resendOTP()
+{
+   randNumb = Math.floor(Math.random() * (9999 - 1000 + 1) + 1000);
+   if(document.getElementById("email").value != 0 || document.getElementById("email").value != "")
+   { 
+       Email.send({
+          SecureToken : "8ee728d5-0750-4e96-9095-8fa4a4de44a5",
+          To : document.getElementById("email").value,
+          From : 'manumaanowais809@gmail.com',
+          ReplyTo : 'manumaanowais809@gmail.com',
+          Subject : "Exam Portal - OTP For Email Validation",
+          Body : "<br><b>Your One Time Password for verifying your email is : </b>"
+          + randNumb,
+        }).then(
+           message => Swal.fire({
+        	  	  text: 'OTP sent to : '+document.getElementById("email").value,
+        	  	  target: '#otpsent',
+        	  	  customClass: {
+        	  	    body: 'position-absolute'
+        	  	  },
+        	  	  toast: true,
+        	  	  position: 'top-right'
+        	  	})
+           
+        );
+      
+      document.getElementById("resendotp").disabled = true;
+      setInterval(function(){ 
+    	  document.getElementById("resendotp").disabled = false;
+    	}, 30000);
+      //30 seconds timer
+      var timeLeft = 30;
+      var elem = document.getElementById('timer');
+      
+      var timerId = setInterval(countdown, 1000);
+      
+      function countdown() {
+        if (timeLeft == -1) {
+          clearTimeout(timerId);
+          doSomething();
+        } else {
+          elem.innerHTML = timeLeft;
+          timeLeft--;
+        }
+      }
+      document.getElementById("p1").style.display = "block";
+      document.getElementById("validateotp").style.cursor = "pointer";
+      document.getElementById("validateotp").disabled = false;
+   }
+   else
+   {
+	   Swal.fire({
+		   text: 'Email cannot be empty',
+		   target: '#custom-target',
+		   customClass: {
+		     body: 'position-absolute'
+		   },
+		   toast: true,
+		   position: 'top-right'
+		 })
+   }
+   
+}
+
+function validateOTP()
+{
+    var otp = document.getElementById("otp").value;
+    if(randNumb == otp) {
+    	Swal.fire({
+  	  	  text: 'Congratulations! Email is verified',
+  	  	  target: '#otpsent',
+  	  	  customClass: {
+  	  	    body: 'position-absolute'
+  	  	  },
+  	  	  toast: true,
+  	  	  position: 'top-right'
+  	  	})
+        document.getElementById("validateotp").disabled = true;
+        document.getElementById("submitbtn").disabled = false;
+        document.getElementById("submitbtn").style.cursor = "pointer";
+        hideButtons();
+    }else if(otp == null || otp == ""){
+    	Swal.fire({
+  	  	  text: 'OTP cannot be blank!',
+  	  	  target: '#otpsent',
+  	  	  customClass: {
+  	  	    body: 'position-absolute'
+  	  	  },
+  	  	  toast: true,
+  	  	  position: 'top-right'
+  	  	})
+    }
+    else{
+    	Swal.fire({
+  	  	  text: 'Invalid OTP!',
+  	  	  target: '#otpsent',
+  	  	  customClass: {
+  	  	    body: 'position-absolute'
+  	  	  },
+  	  	  toast: true,
+  	  	  position: 'top-right'
+  	  	})
+    }
+}
+</script>
+</html>
